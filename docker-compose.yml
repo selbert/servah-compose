@@ -1,0 +1,105 @@
+version: '2'
+services:
+  sinusbot:
+    image: galexrt/sinusbot
+    environment:
+      - PGID=3000
+      - PUID=3000
+    ports:
+      - "8087:8087"
+    restart: always
+    volumes:
+      - /storage/sinusbot/scripts:/sinusbot/scripts
+      - /storage/sinusbot/data:/sinusbot/data
+  transmission:
+    image: linuxserver/transmission
+    environment: 
+      - PGID=1002
+      - PUID=1002
+    restart: always
+    volumes:
+      - /storage/transmission/config:/config
+      - /storage/media:/downloads
+      - /storage/transmission/watch:/watch
+    ports:
+      - "15000:9091"
+      - "51413:51413"
+      - "51413:51413/udp"
+  deluge:
+    image: linuxserver/deluge
+    restart: always
+    environment:
+      - PGID=1002
+      - PUID=1002
+    network_mode: "host"
+    volumes:
+      - /storage/media/:/downloads
+      - /storage/deluge:/config
+  ts3server:
+    image: linuxserver/gsm-ts3
+    restart: always
+    environment:
+      - PGID=1003
+      - PUID=1003
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: "host"
+  nzbget:
+    image: linuxserver/nzbget
+    restart: always
+    environment:
+      - PGID=1002
+      - PUID=1002
+    volumes:
+      - /storage/nzbget:/config
+      - /storage/media:/downloads
+    ports:
+      - "6789:6789"
+  sickrage:
+    image: linuxserver/sickrage
+    restart: always
+    environment:
+      - PGID=1002
+      - PUID=1002
+    volumes:
+      - /storage/sickrage:/config
+      - /storage/media/Misc:/downloads
+      - /storage/media/Series:/tv
+      - /storage/media/Anime:/anime
+    ports:
+      - "8081:8081"
+  plexrequests:
+    image: linuxserver/plexrequests
+    restart: always
+    environment:
+      - PGID=3000
+      - PUID=3000
+      - URL_BASE=/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /storage/plexrequests:/config
+    ports:
+      - "8030:3000"
+  plexpy:
+    image: linuxserver/plexpy    
+    restart: always
+    environment:
+      - PGID=65534
+      - PUID=112
+    volumes:
+      - /storage/plexpy:/config
+      - /storage/plexpy/logs:/logs:ro
+    ports:
+      - "8181:8181"
+  couchpotato:
+    image: linuxserver/couchpotato
+    restart: always
+    environment:
+      - PGID=1002
+      - PUID=1002
+    volumes:
+      - /storage/media/Misc:/downloads
+      - /storage/media:/movies
+      - /storage/couchpotato:/config
+    ports:
+      - "5050:5050"
