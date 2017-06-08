@@ -25,16 +25,6 @@ services:
       - "15000:9091"
       - "51413:51413"
       - "51413:51413/udp"
-  deluge:
-    image: linuxserver/deluge
-    restart: always
-    environment:
-      - PGID=1002
-      - PUID=1002
-    network_mode: "host"
-    volumes:
-      - /storage/media/:/downloads
-      - /storage/deluge:/config
   ts3server:
     image: linuxserver/gsm-ts3
     restart: always
@@ -43,6 +33,7 @@ services:
       - PUID=1003
     volumes:
       - /etc/localtime:/etc/localtime:ro
+      - /storage/teamspeak:/config
     network_mode: "host"
   nzbget:
     image: linuxserver/nzbget
@@ -103,3 +94,4 @@ services:
       - /storage/couchpotato:/config
     ports:
       - "5050:5050"
+
