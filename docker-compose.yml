@@ -46,19 +46,19 @@ services:
       - /storage/media:/downloads
     ports:
       - "6789:6789"
-  sickrage:
-    image: linuxserver/sickrage
+  sonarr:
+    image: linuxserver/sonarr
     restart: always
     environment:
       - PGID=1002
       - PUID=1002
     volumes:
-      - /storage/sickrage:/config
-      - /storage/media/Misc:/downloads
+      - /storage/sonarr:/config
+      - /storage/media:/downloads
       - /storage/media/Series:/tv
       - /storage/media/Anime:/anime
     ports:
-      - "8081:8081"
+      - 8989:8989
   plexrequests:
     image: linuxserver/plexrequests
     restart: always
