@@ -1,16 +1,5 @@
 version: '2'
 services:
-  sinusbot:
-    image: galexrt/sinusbot
-    environment:
-      - PGID=3000
-      - PUID=3000
-    ports:
-      - "8087:8087"
-    restart: always
-    volumes:
-      - /storage/sinusbot/scripts:/sinusbot/scripts
-      - /storage/sinusbot/data:/sinusbot/data
   transmission:
     image: linuxserver/transmission
     environment: 
@@ -59,6 +48,18 @@ services:
       - /storage/media/Anime:/anime
     ports:
       - 8989:8989
+  radarr:
+    image: linuxserver/radarr
+    restart: always
+    environment:
+      - PGID=1002
+      - PUID=1002
+    volumes:
+      - /storage/radarr:/config
+      - /storage/media:/downloads
+      - /storage/media/Movies:/movies
+    ports:
+      - 7878:7878
   plexrequests:
     image: linuxserver/plexrequests
     restart: always
@@ -82,16 +83,4 @@ services:
       - /storage/plexpy/logs:/logs:ro
     ports:
       - "8181:8181"
-  couchpotato:
-    image: linuxserver/couchpotato
-    restart: always
-    environment:
-      - PGID=1002
-      - PUID=1002
-    volumes:
-      - /storage/media/Misc:/downloads
-      - /storage/media:/movies
-      - /storage/couchpotato:/config
-    ports:
-      - "5050:5050"
 
