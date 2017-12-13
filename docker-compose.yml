@@ -58,6 +58,7 @@ services:
       - /storage/radarr:/config
       - /storage/media:/downloads
       - /storage/media/Movies:/movies
+      - /archive/media/Movies:/archived-movies
     ports:
       - 7878:7878
   plexrequests:
