@@ -1,5 +1,16 @@
 version: '2'
 services:
+  sinusbot:
+    image: galexrt/sinusbot
+    environment:
+      - PGID=3000
+      - PUID=3000
+    ports:
+      - "8087:8087"
+    restart: always
+    volumes:
+      - /storage/sinusbot/scripts:/sinusbot/scripts
+      - /storage/sinusbot/data:/sinusbot/data  
   transmission:
     image: linuxserver/transmission
     environment: 
@@ -73,8 +84,8 @@ services:
       - /storage/plexrequests:/config
     ports:
       - "8030:3000"
-  plexpy:
-    image: linuxserver/plexpy    
+  tautulli:
+    image: linuxserver/tautulli
     restart: always
     environment:
       - PGID=65534
