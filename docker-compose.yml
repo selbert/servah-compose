@@ -113,11 +113,7 @@ services:
       - redis
     environment:
       - OWNCLOUD_DOMAIN=owncloud.tom.place
-      - OWNCLOUD_DB_TYPE=mysql
-      - OWNCLOUD_DB_NAME=owncloud
-      - OWNCLOUD_DB_USERNAME=owncloud
-      - OWNCLOUD_DB_PASSWORD=owncloud
-      - OWNCLOUD_DB_HOST=db
+      - OWNCLOUD_DB_TYPE=sqlite
       - OWNCLOUD_ADMIN_USERNAME=${ADMIN_USERNAME}
       - OWNCLOUD_ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - OWNCLOUD_UTF8MB4_ENABLED=true
@@ -130,26 +126,6 @@ services:
       retries: 5
     volumes:
       - /storage/owncloud/data:/mnt/data
-  db:
-    image: webhippie/mariadb:latest
-    restart: always
-    environment:
-      - MARIADB_ROOT_PASSWORD=owncloud
-      - MARIADB_USERNAME=owncloud
-      - MARIADB_PASSWORD=owncloud
-      - MARIADB_DATABASE=owncloud
-      - MARIADB_MAX_ALLOWED_PACKET=128M
-      - MARIADB_INNODB_LOG_FILE_SIZE=64M
-      - MARIADB_INNODB_LARGE_PREFIX=ON
-      - MARIADB_INNODB_FILE_FORMAT=Barracuda
-    healthcheck:
-      test: ["CMD", "/usr/bin/healthcheck"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    volumes:
-      - mysql:/var/lib/mysql
-      - /storage/ownclouddb:/var/lib/backup
   redis:
     image: webhippie/redis:latest
     restart: always
@@ -164,7 +140,5 @@ services:
       - redis:/var/lib/redis
 
 volumes:
-  mysql:
-    driver: local
   redis:
     driver: local
