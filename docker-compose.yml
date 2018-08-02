@@ -113,6 +113,7 @@ services:
     environment:
       - OWNCLOUD_DOMAIN=owncloud.tom.place
       - OWNCLOUD_DB_TYPE=sqlite
+      - OWNCLOUD_DB_NAME=owncloud
       - OWNCLOUD_ADMIN_USERNAME=${ADMIN_USERNAME}
       - OWNCLOUD_ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - OWNCLOUD_UTF8MB4_ENABLED=true
