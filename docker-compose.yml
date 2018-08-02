@@ -109,7 +109,6 @@ services:
     image: owncloud/server:latest
     restart: always
     depends_on:
-      - db
       - redis
     environment:
       - OWNCLOUD_DOMAIN=owncloud.tom.place
