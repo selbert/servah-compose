@@ -104,5 +104,5 @@ services:
     volumes:
       - /storage/nginx/config:/etc/nginx/conf.d
       - /storage/nginx/dhparam:/dhparam
-      - /etc/letsencrypt/live:/certs
+      - /etc/letsencrypt:/certs
 
