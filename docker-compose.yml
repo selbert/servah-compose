@@ -115,7 +115,7 @@ services:
       - MYSQL_ROOT_PASSWORD=
     env_file:
       - nextcloud.env
-  app:  
+  nextcloud:  
     image: nextcloud:apache
     restart: always
     ports:
@@ -124,6 +124,7 @@ services:
       - /storage/nextcloud:/var/www/html
     environment:
       - MYSQL_HOST=db
+      - SQLITE_DATABASE=owncloud
     env_file:
       - nextcloud.env
     depends_on:
