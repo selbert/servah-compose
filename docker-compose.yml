@@ -105,40 +105,26 @@ services:
       - /storage/nginx/config:/etc/nginx/conf.d
       - /storage/nginx/dhparam:/dhparam
       - /etc/letsencrypt:/certs
-  owncloud:
-    image: owncloud/server:latest
+  db:
+    image: mariadb
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     restart: always
+    volumes:
+      - /storage/nextclouddb:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+    env_file:
+      - nextcloud.env
+  app:  
+    image: nextcloud:apache
+    restart: always
+    ports:
+      - 8080:80
+    volumes:
+      - /storage/nextcloud:/var/www/html
+    environment:
+      - MYSQL_HOST=db
+    env_file:
+      - nextcloud.env
     depends_on:
-      - redis
-    environment:
-      - OWNCLOUD_DOMAIN=owncloud.tom.place
-      - OWNCLOUD_DB_TYPE=sqlite
-      - OWNCLOUD_DB_NAME=owncloud
-      - OWNCLOUD_ADMIN_USERNAME=${ADMIN_USERNAME}
-      - OWNCLOUD_ADMIN_PASSWORD=${ADMIN_PASSWORD}
-      - OWNCLOUD_UTF8MB4_ENABLED=true
-      - OWNCLOUD_REDIS_ENABLED=true
-      - OWNCLOUD_REDIS_HOST=redis
-    healthcheck:
-      test: ["CMD", "/usr/bin/healthcheck"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    volumes:
-      - /storage/owncloud/data:/mnt/data
-  redis:
-    image: webhippie/redis:latest
-    restart: always
-    environment:
-      - REDIS_DATABASES=1
-    healthcheck:
-      test: ["CMD", "/usr/bin/healthcheck"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    volumes:
-      - redis:/var/lib/redis
-
-volumes:
-  redis:
-    driver: local
+      - db
