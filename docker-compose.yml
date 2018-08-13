@@ -26,15 +26,20 @@ services:
       - "51413:51413"
       - "51413:51413/udp"
   ts3server:
-    image: linuxserver/gsm-ts3
+    image: teamspeak
     restart: always
     environment:
       - PGID=1003
       - PUID=1003
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /storage/teamspeak:/config
-    network_mode: "host"
+      - /storage/teamspeak:/var/ts3server/
+    environment:
+      TS3SERVER_LICENSE: accept
+    ports:
+      - 9987:9987/udp
+      - 10011:10011
+      - 30033:30033
   nzbget:
     image: linuxserver/nzbget
     restart: always
@@ -105,27 +110,24 @@ services:
       - /storage/nginx/config:/etc/nginx/conf.d
       - /storage/nginx/dhparam:/dhparam
       - /etc/letsencrypt:/certs
-  db:
+  nextclouddb:
     image: mariadb
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     restart: always
     volumes:
       - /storage/nextclouddb:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_ROOT_PASSWORD=nextcloud
     env_file:
       - nextcloud.env
   nextcloud:  
     image: nextcloud:apache
     restart: always
-    ports:
-      - 8080:80
     volumes:
       - /storage/nextcloud:/var/www/html
     environment:
-      - MYSQL_HOST=db
-      - SQLITE_DATABASE=owncloud
+      - MYSQL_HOST=nextclouddb
     env_file:
       - nextcloud.env
     depends_on:
-      - db
+      - nextclouddb
