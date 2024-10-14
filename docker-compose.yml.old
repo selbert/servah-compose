@@ -1,0 +1,59 @@
+version: '2.1'
+services:
+  sinusbot:
+    image: galexrt/sinusbot
+    environment:
+      - PGID=3000
+      - PUID=3000
+    ports:
+      - "8087:8087"
+    restart: always
+    volumes:
+      - /storage/sinusbot/scripts:/sinusbot/scripts
+      - /storage/sinusbot/data:/sinusbot/data  
+  ts3server:
+    image: teamspeak
+    restart: always
+    environment:
+      - PGID=1003
+      - PUID=1003
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /storage/teamspeak:/var/ts3server/
+    environment:
+      TS3SERVER_LICENSE: accept
+    ports:
+      - 9987:9987/udp
+      - 10011:10011
+      - 30033:30033
+  nginx:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /storage/nginx/config:/etc/nginx/conf.d
+      - /storage/nginx/dhparam:/dhparam
+      - /etc/letsencrypt:/certs
+  nextclouddb:
+    image: mariadb
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    restart: always
+    volumes:
+      - /storage/nextclouddb:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=nextcloud
+    env_file:
+      - nextcloud.env
+  nextcloud:  
+    image: nextcloud:apache
+    restart: always
+    volumes:
+      - /storage/nextcloud:/var/www/html
+    environment:
+      - MYSQL_HOST=nextclouddb
+    env_file:
+      - nextcloud.env
+    depends_on:
+      - nextclouddb
